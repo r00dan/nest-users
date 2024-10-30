@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { LoggerInterceptor } from 'core/interceptors/logger.interceptor';
 
 function injectSwagger(app: INestApplication) {
   if (process.env.NODE_ENV === 'developement') {
@@ -48,6 +49,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.useGlobalInterceptors(new LoggerInterceptor());
 
   injectSwagger(app);
 

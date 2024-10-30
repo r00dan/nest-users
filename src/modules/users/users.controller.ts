@@ -1,32 +1,35 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
-import { LoggerInterceptor } from 'core/interceptors/logger.interceptor';
 import { GetUserByIdDto } from './dtos/get-user-by-id.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
+@ApiTags('users')
 @Controller('users')
-@UseInterceptors(LoggerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Get('/:id')
-  public getUserById(
-    @Param('id')
-    id: GetUserByIdDto['id'],
-  ) {
-    return this.usersService.getUserById(id);
-  }
 
   @Post()
   public createUser(@Body() dto: CreateUserDto) {
     return this.usersService.createUser(dto);
+  }
+
+  @Put('/:id')
+  public async updateUser(
+    @Param('id')
+    id: GetUserByIdDto['id'],
+    @Body() dto: UpdateUserDto,
+  ) {
+    await this.usersService.updateUser(id, dto);
+  }
+
+  @Delete('/:id')
+  public async deleteUser(
+    @Param('id')
+    id: GetUserByIdDto['id'],
+  ) {
+    await this.usersService.deleteUser(id);
   }
 }

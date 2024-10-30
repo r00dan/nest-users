@@ -22,7 +22,7 @@ export class UsersService {
     private readonly usersRepository: Repository<UsersModel>,
   ) {}
 
-  public async getUsers() {
+  public async getUserList() {
     const users = await this.usersRepository.find();
 
     return users.map((user) => plainToInstance(UserDto, user));
