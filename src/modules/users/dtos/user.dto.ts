@@ -1,31 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
 
-import { IsNanoId } from 'core/decorators/is-nanoid.decorator';
 import { UsersModel } from '../users.model';
 
-export class UserDto implements Required<Omit<UsersModel, 'password'>> {
-  @IsNanoId()
+export class UserDto implements Required<UsersModel> {
+  @Expose()
   @ApiProperty()
   id: string;
 
-  @IsString()
+  @Expose()
   @ApiProperty()
   username: string;
 
-  @IsEmail()
+  @Expose()
   @ApiProperty()
   email: string;
 
-  @IsNumber()
+  @Expose()
   @ApiProperty()
   age: number;
 
-  @IsDate()
+  @Exclude()
+  @ApiProperty()
+  password: string;
+
+  @Expose()
   @ApiProperty()
   created_at: Date;
 
-  @IsDate()
+  @Expose()
   @ApiProperty()
   updated_at: Date;
 }

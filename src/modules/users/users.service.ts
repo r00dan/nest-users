@@ -2,16 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
+import { nanoid } from 'nanoid';
+import bcrypt from 'bcrypt';
 
 import { UsersModel } from './users.model';
 import { UserDto } from './dtos/user.dto';
-import {
-  notFoundUserByEmail,
-  notFoundUserById,
-  notFoundUserByUsername,
-} from './exceptions/not-found-user.exception';
+import { notFoundUserById } from './exceptions/not-found-user.exception';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { nanoid } from 'nanoid';
+import {
+  duplicateUserWithSameEmail,
+  duplicateUserWithSameUsername,
+} from './exceptions/duplicate-user.exception';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,34 +38,57 @@ export class UsersService {
     return plainToInstance(UserDto, user);
   }
 
-  public async getUserByUsername(username: string) {
-    const user = await this.usersRepository.findOne({ where: { username } });
-
-    if (!user) {
-      throw notFoundUserByUsername(username);
-    }
-
-    return plainToInstance(UserDto, user);
-  }
-
-  public async getUserByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
-
-    if (!user) {
-      throw notFoundUserByEmail(email);
-    }
-
-    return plainToInstance(UserDto, user);
-  }
-
   public async createUser(dto: CreateUserDto) {
     const currentDate = new Date();
-
-    await this.usersRepository.save({
+    const password = await this.encodePassword(dto.password);
+    const candidate = this.usersRepository.create({
+      ...dto,
       id: nanoid(),
+      password,
       created_at: currentDate,
       updated_at: currentDate,
-      ...dto,
     });
+    const existingUser = await this.usersRepository.findOne({
+      where: [{ email: dto.email }, { username: dto.username }],
+    });
+
+    if (existingUser) {
+      if (existingUser.email === dto.email) {
+        throw duplicateUserWithSameEmail(dto.email);
+      }
+      if (existingUser.username === dto.username) {
+        throw duplicateUserWithSameUsername(dto.username);
+      }
+    }
+
+    await this.usersRepository.save(candidate);
+
+    return plainToInstance(UserDto, candidate);
+  }
+
+  public async updateUser(id: string, dto: UpdateUserDto) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    await this.usersRepository.save({
+      ...user,
+      ...dto,
+      updated_at: new Date(),
+    });
+  }
+
+  public async deleteUser(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw notFoundUserById(id);
+    }
+
+    await this.usersRepository.remove(user);
+  }
+
+  private async encodePassword(raw: string) {
+    const salt = await bcrypt.genSalt(5);
+
+    return await bcrypt.hash(raw, salt);
   }
 }

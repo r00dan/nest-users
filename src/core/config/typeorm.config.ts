@@ -1,4 +1,4 @@
-import { DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { TypeormNamingStrategy } from './typeorm-naming.config';
 
@@ -13,6 +13,11 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: false,
   dropSchema: false,
   entities: ['dist/**/*.model{.js,.ts}'],
+  migrationsRun: false,
   migrations: ['dist/migrations/*{.js,.ts}'],
   namingStrategy: new TypeormNamingStrategy(),
 };
+
+const dataSource = new DataSource(dataSourceOptions);
+
+export default dataSource;

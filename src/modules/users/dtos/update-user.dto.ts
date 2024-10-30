@@ -1,23 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { UsersModel } from '../users.model';
 
-export class CreateUserDto
+export class UpdateUserDto
   implements Pick<UsersModel, 'username' | 'email' | 'password' | 'age'>
 {
   @IsString()
+  @IsOptional()
   @ApiProperty()
-  username: string;
+  username?: string;
 
   @IsString()
+  @IsOptional()
   @ApiProperty()
-  email: string;
+  email?: string;
 
   @IsString()
+  @IsOptional()
   @ApiProperty()
-  password: string;
+  password?: string;
 
   @IsNumber()
+  @IsOptional()
   @ApiProperty()
-  age: number;
+  age?: number;
 }
