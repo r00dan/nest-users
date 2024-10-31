@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { UsersModel } from '../users.model';
+import { Roles } from './user.dto';
 
 export class CreateUserDto
   implements Pick<UsersModel, 'username' | 'email' | 'password' | 'age'>
@@ -16,6 +23,11 @@ export class CreateUserDto
   @IsString()
   @ApiProperty()
   password: string;
+
+  @IsEnum(Roles)
+  @ApiProperty({ enum: Roles })
+  @IsOptional()
+  role?: Roles;
 
   @IsNumber()
   @ApiProperty()

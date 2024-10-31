@@ -15,7 +15,7 @@ import { CurrentUser } from 'core/decorators/current-user.decorator';
 import { UsersModel } from './users.model';
 import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 
-@ApiTags('users')
+@ApiTags('[jwt] users')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard)

@@ -3,6 +3,11 @@ import { Exclude, Expose } from 'class-transformer';
 
 import { UsersModel } from '../users.model';
 
+export enum Roles {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 export class UserDto implements Required<UsersModel> {
   @Expose()
   @ApiProperty()
@@ -23,6 +28,10 @@ export class UserDto implements Required<UsersModel> {
   @Exclude()
   @ApiProperty()
   password: string;
+
+  @Expose()
+  @ApiProperty({ enum: Roles })
+  role: Roles;
 
   @Expose()
   @ApiProperty()

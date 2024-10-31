@@ -1,7 +1,8 @@
 import { Entity, PrimaryColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { NullableColumn } from 'core/decorators/nullable-column.decorator';
-import { ApiProperty } from '@nestjs/swagger';
+import { Roles } from './dtos/user.dto';
 
 @Entity('users')
 export class UsersModel {
@@ -24,6 +25,10 @@ export class UsersModel {
   @NullableColumn()
   @ApiProperty()
   password?: string;
+
+  @NullableColumn({ enum: Roles, default: Roles.USER })
+  @ApiProperty({ enum: Roles })
+  role?: Roles;
 
   @NullableColumn()
   @ApiProperty()
