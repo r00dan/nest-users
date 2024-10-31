@@ -5,9 +5,10 @@ import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { LoggerInterceptor } from 'core/interceptors/logger.interceptor';
+import { Environment } from 'enums';
 
 function injectSwagger(app: INestApplication) {
-  if (process.env.NODE_ENV === 'developement') {
+  if (process.env.NODE_ENV === Environment.DEV) {
     const config = new DocumentBuilder()
       .addCookieAuth('refresh')
       .addBasicAuth()
