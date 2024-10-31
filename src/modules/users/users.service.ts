@@ -71,6 +71,10 @@ export class UsersService {
   public async updateUser(id: string, dto: UpdateUserDto) {
     const user = await this.usersRepository.findOne({ where: { id } });
 
+    if (!user) {
+      throw notFoundUserById(id);
+    }
+
     const existingUser = await this.usersRepository.findOne({
       where: [{ email: dto.email }, { username: dto.username }],
     });

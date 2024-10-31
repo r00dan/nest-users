@@ -43,16 +43,6 @@ export class TokenService {
     );
   }
 
-  public decodeToken(token: string) {
-    try {
-      const payload = this.jwtService.decode(token, { json: true });
-
-      return payload;
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-
   public async verifyAccessToken(token: string) {
     try {
       const secret = this.configService.get<string>('ACCESS_TOKEN_SECRET');
