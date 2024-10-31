@@ -1,35 +1,45 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
-import { GetUserByIdDto } from './dtos/get-user-by-id.dto';
-import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { JwtAuthGuard } from 'core/guards/jwt-auth.guard';
+import { CurrentUser } from 'core/decorators/current-user.decorator';
+import { UsersModel } from './users.model';
+import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  public createUser(@Body() dto: CreateUserDto) {
-    return this.usersService.createUser(dto);
-  }
-
-  @Put('/:id')
+  @Put()
   public async updateUser(
-    @Param('id')
-    id: GetUserByIdDto['id'],
+    @CurrentUser() user: UsersModel,
     @Body() dto: UpdateUserDto,
   ) {
-    await this.usersService.updateUser(id, dto);
+    await this.usersService.updateUser(user.id, dto);
   }
 
-  @Delete('/:id')
-  public async deleteUser(
-    @Param('id')
-    id: GetUserByIdDto['id'],
+  @Put('/password')
+  public async updateUserPassword(
+    @CurrentUser() user: UsersModel,
+    @Body() dto: UpdateUserPasswordDto,
   ) {
-    await this.usersService.deleteUser(id);
+    await this.usersService.updateUserPassword(user.id, dto);
+  }
+
+  @Delete()
+  public async deleteUser(@CurrentUser() user: UsersModel) {
+    await this.usersService.deleteUser(user.id);
   }
 }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+
 import { UsersModel } from '../users.model';
 
 export class UpdateUserDto

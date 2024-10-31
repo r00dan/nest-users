@@ -14,6 +14,7 @@ import {
   duplicateUserWithSameUsername,
 } from './exceptions/duplicate-user.exception';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -56,6 +57,7 @@ export class UsersService {
       if (existingUser.email === dto.email) {
         throw duplicateUserWithSameEmail(dto.email);
       }
+
       if (existingUser.username === dto.username) {
         throw duplicateUserWithSameUsername(dto.username);
       }
@@ -69,9 +71,37 @@ export class UsersService {
   public async updateUser(id: string, dto: UpdateUserDto) {
     const user = await this.usersRepository.findOne({ where: { id } });
 
+    const existingUser = await this.usersRepository.findOne({
+      where: [{ email: dto.email }, { username: dto.username }],
+    });
+
+    if (existingUser) {
+      if (existingUser.email === dto.email) {
+        throw duplicateUserWithSameEmail(dto.email);
+      }
+
+      if (existingUser.username === dto.username) {
+        throw duplicateUserWithSameUsername(dto.username);
+      }
+    }
+
     await this.usersRepository.save({
       ...user,
       ...dto,
+      updated_at: new Date(),
+    });
+  }
+
+  public async updateUserPassword(
+    id: string,
+    { password }: UpdateUserPasswordDto,
+  ) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    const newEncodedPassword = await this.encodePassword(password);
+
+    await this.usersRepository.save({
+      ...user,
+      password: newEncodedPassword,
       updated_at: new Date(),
     });
   }

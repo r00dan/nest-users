@@ -13,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: false,
   dropSchema: false,
   entities: ['dist/**/*.model{.js,.ts}'],
-  migrationsRun: false,
+  migrationsRun: true,
   migrations: ['dist/migrations/*{.js,.ts}'],
   namingStrategy: new TypeormNamingStrategy(),
 };

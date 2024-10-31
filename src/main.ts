@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { LoggerInterceptor } from 'core/interceptors/logger.interceptor';
@@ -30,6 +31,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableShutdownHooks();
+  app.use(cookieParser('nest-users-super-secret'));
   app.enableCors({
     origin: true,
     methods: 'GET,PUT,PATCH,POST,DELETE',
