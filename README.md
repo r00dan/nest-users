@@ -9,9 +9,10 @@
 - `POSTGRES_NAME`: Name of the database to use.
 
 ### Application Configuration
+- `BIND`: Port number the app is running on.
 - `NODE_ENV`: Environment the app is running in (`development`, `production`, etc.)
-- `ACCESS_TOKEN_SECRET`: Secret key for signing access tokens
-- `REFRESH_TOKEN_SECRET`: Secret key for signing refresh tokens
+- `ACCESS_TOKEN_SECRET`: Secret key for signing access tokens.
+- `REFRESH_TOKEN_SECRET`: Secret key for signing refresh tokens.
 - `ACCESS_TOKEN_LIFETIME`: Access token lifetime in minutes (e.g., `480` for 8 hours)
 - `REFRESH_TOKEN_LIFETIME`: Refresh token lifetime in days (e.g., `7` for one week)
 
